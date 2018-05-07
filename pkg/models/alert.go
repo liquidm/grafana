@@ -95,6 +95,7 @@ func (this *Alert) ContainsUpdates(other *Alert) bool {
 	result := false
 	result = result || this.Name != other.Name
 	result = result || this.Message != other.Message
+	result = result || this.EvalData != other.EvalData
 
 	if this.Settings != nil && other.Settings != nil {
 		json1, err1 := this.Settings.Encode()
