@@ -23,10 +23,7 @@ execute_build:
     - go run build.go setup
     - go run build.go build
     - npm install yarn
-    - npm install grunt
-    - npm install
-    - npm audit fix
-    - ./node_modules/yarn/bin/yarn install
+    - ./node_modules/yarn/bin/yarn install --pure-lockfile
     - npm run build
     - cd ${VENDOR_PATH}/${PROJECT_NAME}/..
     - tar -zcf ${CI_PROJECT_DIR}/${ARTIFACT} ${CI_PROJECT_NAME}
