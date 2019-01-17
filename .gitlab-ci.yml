@@ -1,0 +1,32 @@
+image: registry.build.ligatus.com/dsp/go-build-agent
+
+stages:
+  - build
+
+variables:
+  VENDOR_PATH: "/go/src/github.com/grafana"
+  PROJECT_NAME: "grafana"
+  ARTIFACT: "artifact.tar.gz"
+
+before_script:
+  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+  - curl http://config.c.ligatus-dev-build.internal/deploy-key/deploy-key -s > ~/.ssh/id_rsa
+
+execute_build:
+  stage: build
+  script:
+    - apt-get -y update
+    - apt-get -y install build-essential
+    - mkdir -p ${VENDOR_PATH}
+    - ln -s /builds/dsp/${PROJECT_NAME} ${VENDOR_PATH}/${PROJECT_NAME}
+    - cd ${VENDOR_PATH}/${PROJECT_NAME}
+    - go run build.go setup
+    - go run build.go build
+    - npm install yarn
+    - npm install grunt
+    - ./node_modules/yarn/bin/yarn install
+    - npm run build
+    - cd ${VENDOR_PATH}/${PROJECT_NAME}/..
+    - tar -zcf ${CI_PROJECT_DIR}/${ARTIFACT} ${CI_PROJECT_NAME}
+    - gsutil cp ${CI_PROJECT_DIR}/${ARTIFACT} gs://lqm-artifact/${CI_PROJECT_NAME}/${CI_COMMIT_SHA}
+
