@@ -24,6 +24,8 @@ execute_build:
     - go run build.go build
     - npm install yarn
     - npm install grunt
+    - npm install
+    - npm audit fix
     - ./node_modules/yarn/bin/yarn install
     - npm run build
     - cd ${VENDOR_PATH}/${PROJECT_NAME}/..
